@@ -1,0 +1,23 @@
+{
+  "ACCESS_KEY":
+  "API":"link",
+  "PROTOCOL": "",
+  "DOMAIN": "",
+  "DEBUG": true,
+  "SECRET_KEY": "<set_secret_key_here>",
+  "DATABASE": {
+    "HOST": "",
+    "PORT": "",
+    "NAME": "",
+    "USER": "",
+    "PASSWORD": ""
+  },
+      "REDIS": {
+        "HOST": "",
+        "PORT": "",
+        "CACHE_DB": ""
+    },
+    "CELERY": {
+        "BROKER_URL": ""
+    }
+}
