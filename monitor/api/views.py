@@ -1,4 +1,3 @@
-from django.shortcuts import render, redirect
 import requests
 import datetime
 import psutil
@@ -31,6 +30,7 @@ class TrafficMonitor(APIView):
         totalSiteVisits = p.count
         # find unique page viewers & Duration
         pageNum = request.GET.get('page', 1)
+        print(pageNum)
         page1 = p.page(pageNum)
         # unique page viewers
         a = Monitor.objects.order_by().values('ip').distinct()
@@ -54,10 +54,9 @@ class TrafficMonitor(APIView):
             return Response(status=status.HTTP_200_OK, data=data)
 
 
-class CreateMonitor(APIView):
+class GetAndSaveMonitor(APIView):
     @staticmethod
-    def post(request):
-        print(request.META.get('ip'))
+    def get(request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
             ip = x_forwarded_for.split(',')[0]
@@ -66,7 +65,6 @@ class CreateMonitor(APIView):
         # change from HTTP to HTTPS on the IPSTACK API if you have a premium account
         response = requests.get(f'{API_URL}' + f'{ip}' + f'?access_key={access_key}')
         rawData = response.json()
-        print(rawData)  # print this out to look at the response
         continent = rawData['continent_name']
         country = rawData['country_name']
         city = rawData['city']
@@ -86,14 +84,9 @@ class CreateMonitor(APIView):
         return Response(status=status.HTTP_201_CREATED, data=data)
 
 
-class UpdateIp(APIView):
+class CreateMonitorByIp(APIView):
     @staticmethod
-    def put(request, pk, ip):
-        try:
-            qs = Monitor.objects.get(id=pk)
-        except Monitor.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
+    def post(request, ip):
         response = requests.get(f'{API_URL}' + f'{ip}' + f'?access_key={access_key}')
         rawData = response.json()
         continent = rawData['continent_name']
@@ -115,20 +108,20 @@ class UpdateIp(APIView):
         return Response(status=status.HTTP_200_OK, data=data)
 
 
-class AllTrafficMonitor(APIView):
+class GetAllTrafficMonitor(APIView):
     @staticmethod
     def get(request):
         data = Monitor.objects.all().order_by('-datetime')
-        # for dt in data:
-        #     data = {
-        #         "ip": dt.ip,
-        #         "continent": dt.continent,
-        #         "country": dt.country,
-        #         "city": dt.city,
-        #         "capital": dt.capital,
-        #         "datetime": dt.datetime
-        #     }
-        # print(data)
+        serializer = AllMonitorSerializers(data, many=True)
+        return Response(serializer.data)
 
+
+class GetTrafficMonitorById(APIView):
+    @staticmethod
+    def get(resquest, pk):
+        try:
+            data = Monitor.objects.filter(id=pk)
+        except Monitor.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = AllMonitorSerializers(data, many=True)
         return Response(serializer.data)

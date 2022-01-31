@@ -27,6 +27,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_celery_beat',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,11 +36,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'api',
+    'corsheaders',
 
     'rest_framework',
     'drf_yasg',
-    'corsheaders',
-
 ]
 
 MIDDLEWARE = [

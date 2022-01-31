@@ -28,7 +28,13 @@ class SaveMonitorSerializers(serializers.Serializer):
         model = Monitor
 
 
-class AllMonitorSerializers(serializers.ModelSerializer):
+class AllMonitorSerializers(serializers.Serializer):
+    datetime = serializers.DateField(required=True)
+    ip = serializers.CharField(required=True)
+    capital = serializers.CharField(required=True)
+    city = serializers.CharField(required=True)
+    country = serializers.CharField(required=True)
+    continent = serializers.CharField(required=True)
+
     class Meta:
-        fields = "__all__"
         model = Monitor

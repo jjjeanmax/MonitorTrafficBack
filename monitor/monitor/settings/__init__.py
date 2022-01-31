@@ -5,5 +5,7 @@ include(
     'database.py',
     'cors.py',
     'api_docs.py',
+    'caches.py',
+    'celery.py',
 
 )
